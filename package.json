@@ -1,0 +1,31 @@
+{
+    "name": "root",
+    "private": true,
+    "type": "module",
+    "license": "MIT",
+    "author": {
+        "name": "hophiphip",
+        "email": "hophiphip.dev@gmail.com"
+    },
+    "packageManager": "pnpm@8.2.0",
+    "description": "Input component with text-highlight support",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/hophiphip/rich-input"
+    },
+    "bugs": {
+        "url": "https://github.com/hophiphip/rich-input/issues"
+    },
+    "homepage": "https://github.com/hophiphip/rich-input",
+    "keywords": [
+        "React"
+    ],
+    "scripts": {
+        "preinstall": "npx only-allow pnpm",
+        "format": "pnpm biome format packages/* --write",
+        "core": "pnpm --filter core"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "1.9.3"
+    }
+}
