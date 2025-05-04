@@ -24,8 +24,5 @@
 		"vite": "^5.4.1",
 		"vite-plugin-dts": "^4.2.3"
 	},
-	"files": [
-		"dist",
-		"src"
-	]
+	"files": ["dist", "src"]
 }

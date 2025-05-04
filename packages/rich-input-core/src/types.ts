@@ -4,6 +4,7 @@ export enum TemplateTokenType {
 }
 
 export type TemplateToken = {
+	id: string;
 	value: string;
 	type: TemplateTokenType;
 	position: {

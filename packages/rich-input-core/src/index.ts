@@ -1,5 +1,6 @@
 import { defaultTemplateArgumentEnd, defaultTemplateArgumentStart } from "./const";
 import { type TemplateToken, TemplateTokenType } from "./types";
+import { getTemplateTokenId } from "./utils";
 
 export class TemplateParser {
 	/** argument token start */
@@ -12,7 +13,10 @@ export class TemplateParser {
 	 * @param start argument token start
 	 * @param end argumen token end
 	 */
-	constructor(start: string = defaultTemplateArgumentStart, end: string = defaultTemplateArgumentEnd) {
+	constructor(
+		start: string = defaultTemplateArgumentStart,
+		end: string = defaultTemplateArgumentEnd,
+	) {
 		this.start = start;
 		this.end = end;
 	}
@@ -51,6 +55,7 @@ export class TemplateParser {
 					nesting = 0;
 
 					tokens.push({
+						id: getTemplateTokenId(TemplateTokenType.Literal, tokens.length),
 						value: template.substring(offset, index),
 						type: TemplateTokenType.Literal,
 						position: {
@@ -69,6 +74,7 @@ export class TemplateParser {
 
 				if (isGoingOutsideNesting) {
 					tokens.push({
+						id: getTemplateTokenId(TemplateTokenType.Argument, tokens.length),
 						value: template.substring(offset, index + 1),
 						type: TemplateTokenType.Argument,
 						position: {
@@ -86,6 +92,7 @@ export class TemplateParser {
 
 		if (index !== offset) {
 			tokens.push({
+				id: getTemplateTokenId(TemplateTokenType.Literal, tokens.length),
 				value: template.substring(offset, index),
 				type: TemplateTokenType.Literal,
 				position: {
@@ -96,7 +103,7 @@ export class TemplateParser {
 		}
 
 		return tokens;
-	}	
+	}
 }
 
 // const
@@ -106,4 +113,4 @@ export { defaultTemplateArgumentEnd, defaultTemplateArgumentStart };
 export { type TemplateToken, TemplateTokenType };
 
 // utils
-export * from './utils';
+export * from "./utils";
