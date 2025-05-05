@@ -23,9 +23,11 @@
     "scripts": {
         "preinstall": "npx only-allow pnpm",
         "format": "pnpm biome format packages/* --write",
-        "core": "pnpm --filter core"
+        "core": "pnpm --filter @hophiphip/rich-input-core",
+        "react": "pnpm --filter @hophiphip/rich-input-react",
+        "use-react": "pnpm --filter @hophiphip/use-rich-input-react"
     },
     "devDependencies": {
-        "@biomejs/biome": "1.9.3"
+        "@biomejs/biome": "^1.9.4"
     }
 }
