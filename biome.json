@@ -10,7 +10,8 @@
 		"ignore": [
 			"dist",
 			"dist-dev",
-			"node_modules"
+			"node_modules",
+			"examples"
 		]
 	},
 	"formatter": {
@@ -32,13 +33,13 @@
 	"javascript": {
 		"formatter": {
 			"quoteStyle": "double",
-			"arrowParentheses":"always",
+			"arrowParentheses": "always",
 			"bracketSameLine": false,
 			"bracketSpacing": true,
 			"jsxQuoteStyle": "double",
 			"quoteProperties": "asNeeded",
 			"semicolons": "always",
-			"trailingCommas": "all" 
+			"trailingCommas": "all"
 		}
 	},
 	"json": {
