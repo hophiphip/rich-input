@@ -17,3 +17,13 @@ pnpm dev
 ```
 pnpm build
 ```
+
+## Implementation
+
+This component is implemented without `contenteditable` attribute.
+Current implementation uses overlay component to display `input` contents.
+
+![Overlay logic](./media/rich-input-layers.jpg)
+
+This approach was presented in this article: 
+- https://akashhamirwasia.com/blog/building-highlighted-input-field-in-react/
