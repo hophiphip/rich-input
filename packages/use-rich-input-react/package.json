@@ -1,5 +1,6 @@
 {
 	"name": "@hophiphip/use-rich-input-react",
+	"description": "React hooks and headless components for building your own rich input component implementation",
 	"private": false,
 	"version": "1.0.0",
 	"type": "module",
