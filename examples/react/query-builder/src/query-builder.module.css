@@ -1,0 +1,84 @@
+:root {
+    --line-height: 24px;
+    --padding: 2px;
+    --gap: 4px;
+
+    --color: #000;
+    --color-secondary: #222;
+
+    --border-size: 1px;
+    --border-style: solid;
+    --border-color: #cfcfcf;
+    --border-color-secondary: #efefef;
+    --border-radius: 4px;
+
+    --border-color-active: #1677ff;
+    --box-shadow-active: 0 0 0 2px #e6f4ff;
+
+    --argument-color: #4096ff;
+
+    --dropdown-box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12),
+		0 9px 28px 8px rgba(0, 0, 0, 0.05);
+	--dropdown-height: 200px;
+
+    --bg-secondary: #efefef;
+}
+
+.root {
+	width: 100%;
+	height: var(--line-height);
+	padding: var(--padding);
+	border: var(--border-size) var(--border-style) var(--border-color);
+    border-radius: var(--border-radius);
+	box-sizing: border-box;
+
+    color: var(--color);
+}
+
+.root:focus-within {
+	box-shadow: var(--box-shadow-active);
+	border: var(--border-size) var(--border-style) var(--border-color-active);
+}
+
+.argument {
+    background: transparent;
+    color: var(--argument-color);
+}
+
+.dropdown {
+    box-sizing: border-box;
+	padding: var(--padding);
+
+	box-shadow: var(--dropdown-box-shadow);
+	max-height: var(--dropdown-height);
+    border: var(--border-size) var(--border-style) var(--border-color-secondary);
+	border-radius: var(--border-radius);
+
+	font-size: inherit;
+	font-family: inherit;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+
+	z-index: 2;
+}
+
+.option {
+	background: transparent;
+    height: var(--line-height);
+    padding: var(--padding);
+    box-sizing: border-box;
+	border-radius: var(--border-radius);
+
+    display: flex;
+    gap: var(--gap);
+    flex-direction: row;
+    align-items: center;
+
+    color: var(--color-secondary);
+}
+
+.option:hover {
+    background: var(--bg-secondary);
+}
