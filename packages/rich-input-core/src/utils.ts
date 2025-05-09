@@ -5,7 +5,7 @@ export type TemplateTokenWithoutId = Omit<TemplateToken, 'id'>;
 
 /**
  * Convert an array of template tokens into a string value.
- * @param tokens and array of template tokens
+ * @param tokens an array of template tokens
  * @param start argument token start
  * @param end argument token end
  */
@@ -28,4 +28,34 @@ export function tokensToString(
  */
 export function getTemplateTokenId(tokenType: TemplateTokenType, index: number) {
     return `tempalte-token-${index}-${tokenType}`;
+}
+
+/**
+ * Compute current token based on input cursor position
+ * @param tokens an array of template tokens
+ * @param cursorStart input cursor start position
+ * @param curstorEnd input cursor end position
+ * @returns {([TemplateToken, number] | [null, null])} current token and current token index, or `null` if no valid token was found in the current cursor position
+ */
+export function computeCurrentToken(
+	tokens: TemplateToken[],
+	cursorStart: number,
+	curstorEnd: number,
+): [TemplateToken, number] | [null, null] {
+	/** User is selecting text - cannot determine current token */
+	if (cursorStart !== curstorEnd) {
+		return [null, null];
+	}
+
+	for (let tokenIndex = 0; tokenIndex < tokens.length; tokenIndex++) {
+		const token = tokens[tokenIndex];
+		const { position } = token;
+		const { start, end } = position;
+
+		if (start <= cursorStart && (end + 1) >= cursorStart) {
+			return [token, tokenIndex];
+		}
+	}
+
+	return [null, null];
 }
