@@ -6,7 +6,10 @@ export function useInputCursor<
 	const [start, setStart] = useState(0);
 	const [end, setEnd] = useState(0);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies(ref.current): A ref to the input
+	/**
+	 * Callback to trigger input cursor update. 
+	 * biome-ignore lint/correctness/useExhaustiveDependencies(ref.current): reference to the input
+	 */
 	const updateCursor = useCallback(() => {
 		if (ref.current) {
 			const { selectionStart, selectionEnd } = ref.current;
@@ -16,11 +19,15 @@ export function useInputCursor<
 		}
 	}, []);
 
+	/**
+	 * biome-ignore lint/correctness/useExhaustiveDependencies(ref.current): reference to the input
+	 * biome-ignore lint/correctness/useExhaustiveDependencies(ref.current.setSelectionRange): reference to the input property
+	 */
 	useEffect(() => {
 		if (ref.current) {
 			ref.current.setSelectionRange(start, end);
 		}
-	});
+	}, [start, end]);
 
 	return { start, end, updateCursor };
 }

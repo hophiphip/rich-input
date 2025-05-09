@@ -6,6 +6,7 @@ import {
 	type UIEventHandler as ReactUIEventHandler,
 	type RefObject,
 	useCallback,
+	useMemo,
 } from "react";
 
 import type { TemplateToken } from "@hophiphip/rich-input-core";
@@ -63,6 +64,10 @@ export function useRichInput<OverlayElement extends HTMLElement>({
 		updateCursor();
 	}, [updateCursor]);
 
+	const onKeyUp: ReactKeyboardEventHandler<HTMLInputElement> = useCallback(() => {
+		updateCursor();
+	}, [updateCursor]);
+
 	const onClick: ReactMouseEventHandler<HTMLInputElement> = useCallback(() => {
 		updateCursor();
 	}, [updateCursor]);
@@ -85,12 +90,14 @@ export function useRichInput<OverlayElement extends HTMLElement>({
 			return {
 				...userProps,
 
-				value: inputValue,
 				onChange,
-
 				onKeyDown: (event) => {
 					userProps?.onKeyDown?.(event);
 					onKeyDown(event);
+				},
+				onKeyUp: (event) => {
+					userProps?.onKeyUp?.(event);
+					onKeyUp(event);
 				},
 				onClick: (event) => {
 					userProps?.onClick?.(event);
@@ -102,12 +109,12 @@ export function useRichInput<OverlayElement extends HTMLElement>({
 				},
 			};
 		},
-		[onChange, onKeyDown, onClick, onScroll, inputValue],
+		[onChange, onKeyDown, onKeyUp, onClick, onScroll],
 	);
 
 	/** ---------------------------------------------------------------------------------- */
 
-	const getTokenInfo = useCallback((): TokenInfo => {
+	const tokenInfo = useMemo((): TokenInfo => {
 		return {
 			tokens,
 			cursorStart,
@@ -119,6 +126,7 @@ export function useRichInput<OverlayElement extends HTMLElement>({
 
 	return {
 		getInputProps,
-		getTokenInfo,
+		inputValue,
+		tokenInfo,
 	};
 }

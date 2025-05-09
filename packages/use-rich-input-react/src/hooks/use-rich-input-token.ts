@@ -1,37 +1,46 @@
-import { useMemo } from "react";
+import { computeCurrentToken } from "@hophiphip/rich-input-core";
+import { useEffect, useState } from "react";
+
+import { useDebouncedCallback } from "./use-debounced-callback";
 import type { TokenInfo } from "./use-rich-input";
 
-export type UseRichInputTokenOptions = TokenInfo;
+const defaultDebounceDelayMs = 200;
 
+export type UseRichInputTokenOptions = TokenInfo & {
+	debounceDelayMs?: number;
+};
+
+/**
+ * Returns current token index and value.
+ * @param tokenInfo token info object
+ */
 export function useRichInputToken({
-    cursorEnd,
-    cursorStart,
-    tokens,
+	tokens,
+	cursorStart,
+	cursorEnd,
+
+	debounceDelayMs = defaultDebounceDelayMs,
 }: UseRichInputTokenOptions) {
-    return useMemo(() => {
-        if (cursorEnd !== cursorStart) {
-            return {
-                currentTokenIndex: null,
-                currentToken: null,
-            };
-        }
+	const [tokenInfo, setTokenInfo] = useState(() =>
+		computeCurrentToken(tokens, cursorStart, cursorEnd),
+	);
 
-        const currentTokenIndex = tokens.findIndex((token) => {
-			return token.position.start <= cursorStart && token.position.end >= cursorStart;
-		});
+	const debuncedUpdateTokenInfo = useDebouncedCallback(
+		() => {
+			setTokenInfo(computeCurrentToken(tokens, cursorStart, cursorEnd));
+		},
+		debounceDelayMs,
+	);
 
-		if (currentTokenIndex === -1) {
-			return {
-                currentTokenIndex: null,
-                currentToken: null,
-            };
-		}
+    /**
+     * biome-ignore lint/correctness/useExhaustiveDependencies(debuncedUpdateTokenInfo): reference to the function
+	 * biome-ignore lint/correctness/useExhaustiveDependencies(tokens): dependency of debuncedUpdateTokenInfo
+	 * biome-ignore lint/correctness/useExhaustiveDependencies(cursorStart): dependency of debuncedUpdateTokenInfo
+	 * biome-ignore lint/correctness/useExhaustiveDependencies(cursorEnd): dependency of debuncedUpdateTokenInfo
+     */
+	useEffect(() => {
+		debuncedUpdateTokenInfo();
+	}, [tokens, cursorStart, cursorEnd]);
 
-        const currentToken = tokens[currentTokenIndex];
-
-        return {
-            currentTokenIndex,
-            currentToken,
-        }
-    }, [cursorEnd, cursorStart, tokens]);
+	return tokenInfo;
 }
