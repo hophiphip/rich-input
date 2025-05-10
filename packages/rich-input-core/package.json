@@ -2,7 +2,7 @@
 	"name": "@hophiphip/rich-input-core",
 	"description": "Internal logic for rich input component",
 	"private": false,
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"type": "module",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
