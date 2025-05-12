@@ -22,6 +22,7 @@
 	--dropdown-height: 200px;
 
     --bg-secondary: #efefef;
+    --bg-active: #0958d955;
 }
 
 .root {
@@ -81,4 +82,8 @@
 
 .option:hover {
     background: var(--bg-secondary);
+}
+
+.option[aria-selected=true] {
+    background: var(--bg-active);
 }

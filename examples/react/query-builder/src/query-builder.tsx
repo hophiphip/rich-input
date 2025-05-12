@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useMemo, useRef, useState, type Dispatch, type RefObject, type SetStateAction/*, type KeyboardEvent as ReactKeyboardEvent */ } from 'react';
 
 import { GoRepo } from 'react-icons/go';
 import { FaUser } from 'react-icons/fa';
@@ -29,6 +29,9 @@ import {
     useRichInputToken,
 
     TemplateTokenType,
+    type TokenInfo,
+
+    tokensToString,
 } from '@hophiphip/use-rich-input-react';
 
 import '@hophiphip/use-rich-input-react/style.css';
@@ -44,18 +47,154 @@ const queryConfig = {
     ],
     values: {
         repo: [
-            'Alex/ToDoApp',
-            'John/WeatherInfoClient',
+            { key: 'Alex/ToDoApp' },
+            { key: 'John/WeatherInfoClient' },
         ],
         user: [
-            'Alex',
-            'John',
+            { key: 'Alex' },
+            { key: 'John' },
         ],
     }
 } as const;
 
 const argumentStart = ":";
 const argumentEnd = " ";
+
+/** ---------------------------------------------------------------------------------- */
+
+type QueryOptionsProps = {
+    tokenInfo: TokenInfo;
+    setValue: Dispatch<SetStateAction<string>>;
+    listRef: RefObject<(HTMLElement | null)[]>;
+    getItemProps: (userProps?: Omit<React.HTMLProps<HTMLElement>, "selected" | "active"> & Record<string, unknown>) => Record<string, unknown>;
+
+    activeIndex: number | null;
+    setActiveIndex: Dispatch<SetStateAction<number | null>>;
+    setOptionsOpen: Dispatch<SetStateAction<boolean>>;
+
+    inputRef: RefObject<HTMLInputElement | null>;
+}; 
+
+const QueryOptionsBase = ({
+    tokenInfo,
+    setValue,
+    listRef,
+    getItemProps,
+
+    activeIndex,
+    setActiveIndex,
+    setOptionsOpen,
+
+    inputRef,
+}: QueryOptionsProps) => {
+	const [currentToken, currentTokenIndex] = useRichInputToken(tokenInfo);
+
+    const options = useMemo(() => {
+        if (!currentToken || currentToken.type === TemplateTokenType.Literal) {
+            return queryConfig.scopes.map(({ key, Leading }) => ({
+                key,
+                value: `${key}${argumentStart}`,
+                Leading,
+            }));
+        }
+
+        const prevToken = tokenInfo.tokens[currentTokenIndex - 1];
+        if (!prevToken) return [];
+
+        if (currentToken.type === TemplateTokenType.Argument) {
+            switch (prevToken.value) {
+                case 'user':
+                    return queryConfig.values.user.map(({ key }) => ({
+                        key,
+                        value: `${argumentStart}${key}${argumentEnd}`,
+                        Leading: null,
+                    }));
+
+                case 'repo':
+                    return queryConfig.values.repo.map(({ key }) => ({
+                        key,
+                        value: `${argumentStart}${key}${argumentEnd}`,
+                        Leading: null,
+                    }));
+
+                default:
+                    return [];
+            }
+        }
+
+        if (currentToken.type === TemplateTokenType.IncompleteArgument) {
+            switch (prevToken.value) {
+                case 'user':
+                    return queryConfig.values.user.map(({ key }) => ({
+                        key,
+                        value: `${key}${argumentEnd}`,
+                        Leading: null,
+                    }));
+
+                case 'repo':
+                    return queryConfig.values.repo.map(({ key }) => ({
+                        key,
+                        value: `${key}${argumentEnd}`,
+                        Leading: null,
+                    }));
+
+                default:
+                    return [];
+            }
+        }
+
+        return [];
+    }, [
+        currentToken, 
+        currentTokenIndex,
+        tokenInfo.tokens,
+    ]);
+
+    const onOptionClick = useCallback((value: string) => {
+        if (currentTokenIndex) {
+            const newTokens = tokenInfo.tokens.map((token, index) => {
+                return index === currentTokenIndex
+                    ? { ...token, value }
+                    : token
+            });
+
+            setValue(tokensToString(newTokens, argumentStart, argumentEnd));
+        } else {
+            setValue(value);
+        }
+
+        setActiveIndex(null);
+        setOptionsOpen(false);
+        inputRef.current?.focus();
+    }, [currentTokenIndex, setValue, tokenInfo.tokens, setActiveIndex, setOptionsOpen, inputRef]);
+
+    return (
+        <>
+            {options.map(({ Leading, key, value }, index) => (
+                <div 
+                    key={key} 
+                    role='option'
+                    className={classes.option} 
+                    aria-selected={activeIndex === index}
+                    {...getItemProps({
+                        ref: (element) => {
+                            listRef.current[index] = element;
+                        },
+                        onClick: () => {
+                            onOptionClick(value);
+                        },
+                    })}>
+                    {Leading && <Leading />} 
+                    <span>{key}</span>
+                </div>
+            ))}
+        </>
+    );
+};
+
+const QueryOptions = memo(QueryOptionsBase);
+
+/** ---------------------------------------------------------------------------------- */
 
 const QueryBuilder = () => {
     const [value, setValue] = useState("");
@@ -65,7 +204,7 @@ const QueryBuilder = () => {
 	const overlayRef = useRef<HTMLDivElement>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
 
-	const { getInputProps, tokenInfo } = useRichInput({
+	const { getInputProps, tokenInfo, inputValue } = useRichInput({
 		inputRef,
 		overlayRef,
 
@@ -77,8 +216,6 @@ const QueryBuilder = () => {
 	});
 
     const inputProps = useMemo(() => getInputProps(), [getInputProps]);
-
-	const [currentToken, currentTokenIndex] = useRichInputToken(tokenInfo);
 
 	/** ---------------------------------------------------------------------------------- */
 
@@ -126,45 +263,11 @@ const QueryBuilder = () => {
 	]);
 
 	/** ---------------------------------------------------------------------------------- */
-    
-    const options = useMemo(() => {
-        if (!currentToken || currentToken.type === TemplateTokenType.Literal) {
-            return queryConfig.scopes.map((scope) => ({
-                key: scope.key,
-                value: scope.key,
-                Leading: scope.Leading,
-            }));
-        }
 
-        if (currentToken.type === TemplateTokenType.Argument && currentTokenIndex > 0) {
-            const prevToken = tokenInfo.tokens[currentTokenIndex - 1];
-            if (prevToken.type === TemplateTokenType.Literal) {
-                switch (prevToken.value) {
-                    case 'user': {
-                        return queryConfig.values.user.map((user) => ({
-                            key: user,
-                            value: user,
-                            Leading: null,
-                        }))
-                    };
-
-                    case 'repo': {
-                        return queryConfig.values.repo.map((repo) => ({
-                            key: repo,
-                            value: repo,
-                            Leading: null,
-                        }));
-                    };
-                }
-            }
-        }
-
-        return [];
-    }, [
-        tokenInfo.tokens, 
-        currentToken, 
-        currentTokenIndex,
-    ]);
+    //const onInputKeyDown = useCallback((event: ReactKeyboardEvent<HTMLElement>, value: string) => {
+    //    if (event.key === 'Enter' && activeOptionIndex !== null) {
+    //    }
+    //}, [activeOptionIndex]);
 
     return (
         <div ref={rootRef} className={classes.root}>
@@ -173,17 +276,18 @@ const QueryBuilder = () => {
 					{tokenInfo.tokens.map((token) =>
 						token.type === TemplateTokenType.Literal ? (
 							<Token.Literal key={token.id}>
-								{token.value}
+								{token.label}
 							</Token.Literal>
 						) : (
 							<Token.Argument key={token.id} className={classes.argument}>
-								{token.value}
+								{token.label}
 							</Token.Argument>
 						),
 					)}
 				</Overlay>
 
 				<Input 
+                    value={inputValue}
                     {...getReferenceProps({
                         ref: useMergeRefs([inputRef, refs.setReference]),
                         'aria-autocomplete': 'list',
@@ -201,12 +305,16 @@ const QueryBuilder = () => {
                                     className: classes.dropdown,
                                 })}
                             >
-                                {options.map(({ Leading, key, value }) => (
-                                    <div key={key} className={classes.option} {...getItemProps()}>
-                                        {Leading && <Leading />} 
-                                        <span>{value}</span>
-                                    </div>
-                                ))}
+                                <QueryOptions 
+                                    tokenInfo={tokenInfo}
+                                    setValue={setValue}
+                                    listRef={listRef}
+                                    getItemProps={getItemProps}
+                                    activeIndex={activeOptionIndex}
+                                    setOptionsOpen={setOptionsOpen}
+                                    setActiveIndex={setActiveOptionIndex}
+                                    inputRef={inputRef}
+                                />
                             </div>
                         </FloatingFocusManager>
                     </FloatingPortal>
