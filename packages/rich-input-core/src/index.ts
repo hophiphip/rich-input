@@ -73,9 +73,14 @@ export class TemplateParser {
 				const isGoingOutsideNesting = nesting === 1;
 
 				if (isGoingOutsideNesting) {
+					/** Raw value includes start and end character */
+					const rawValue = template.substring(offset, index + 1);
+					const value = rawValue.substring(start.length, rawValue.length - end.length);
+
 					tokens.push({
 						id: getTemplateTokenId(TemplateTokenType.Argument, tokens.length),
-						value: template.substring(offset, index + 1),
+						value,
+						rawValue,
 						type: TemplateTokenType.Argument,
 						position: {
 							start: offset,
@@ -91,15 +96,31 @@ export class TemplateParser {
 		}
 
 		if (index !== offset) {
-			tokens.push({
-				id: getTemplateTokenId(TemplateTokenType.Literal, tokens.length),
-				value: template.substring(offset, index),
-				type: TemplateTokenType.Literal,
-				position: {
-					start: offset,
-					end: index - 1,
-				},
-			});
+			const value = template.substring(offset, index);
+
+			const token: TemplateToken = nesting > 0
+				/** If nesting is greated than 0 then start character was not closed */
+				? {
+					id: getTemplateTokenId(TemplateTokenType.Literal, tokens.length),
+					rawValue: value,
+					value: value.substring(start.length, value.length),
+					type: TemplateTokenType.IncompleteArgument,
+					position: {
+						start: offset,
+						end: index - 1,
+					},
+				}
+				: {
+					id: getTemplateTokenId(TemplateTokenType.Literal, tokens.length),
+					value: value,
+					type: TemplateTokenType.Literal,
+					position: {
+						start: offset,
+						end: index - 1,
+					},
+				};
+
+			tokens.push(token);
 		}
 
 		return tokens;
