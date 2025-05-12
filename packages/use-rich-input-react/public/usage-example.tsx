@@ -40,10 +40,10 @@ const RichInput = ({ debug = true }: { debug?: boolean }) => {
 				<Container>
 					<Overlay ref={overlayRef}>
 						{tokenInfo.tokens.map((token) =>
-							token.type === TemplateTokenType.Literal ? (
-								<Token.Literal key={token.id}>{token.value}</Token.Literal>
+							token.type === TemplateTokenType.Argument ? (
+								<Token.Argument key={token.id}>{token.label}</Token.Argument>
 							) : (
-								<Token.Argument key={token.id}>{token.value}</Token.Argument>
+								<Token.Literal key={token.id}>{token.label}</Token.Literal>
 							),
 						)}
 					</Overlay>
@@ -64,6 +64,22 @@ const RichInput = ({ debug = true }: { debug?: boolean }) => {
 
 /** ---------------------------------------------------------------------------------- */
 
+const TemplateTokenTypeToString = ({ type }: { type: TemplateTokenType | undefined }) => {
+	if (type === undefined)
+		return '-';
+
+	switch (type) {
+		case TemplateTokenType.Literal:
+			return 'Literal';
+		case TemplateTokenType.Argument:
+			return 'Argument';
+		case TemplateTokenType.IncompleteArgument:
+			return 'IncompleteArgument';
+		default:
+			return 'Invalid type';
+	}
+}
+
 function DebugInput({
 	currentToken,
 	tokenInfo,
@@ -73,7 +89,14 @@ function DebugInput({
 }) {
 	return (
 		<div>
-			<div>Current token: {currentToken?.value ?? "-"}</div>
+			<div>Current token value: {currentToken?.value ?? "-"}</div>
+
+			{(!!currentToken && currentToken.type !== TemplateTokenType.Literal) && (
+				<div>Current token raw value: {currentToken.rawValue}</div>
+			)}
+
+			<div>Current token type: <TemplateTokenTypeToString type={currentToken?.type} /></div>
+
 			<div>
 				Cursor position: [{tokenInfo.cursorStart}, {tokenInfo.cursorEnd}]
 			</div>
