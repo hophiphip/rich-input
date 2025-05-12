@@ -1,7 +1,7 @@
-import cx from 'classnames';
+import cx from "classnames";
 import { type HTMLAttributes, forwardRef } from "react";
 
-import classes from './token.module.css';
+import classes from "./token.module.css";
 
 const Literal = forwardRef<HTMLSpanElement, HTMLAttributes<HTMLSpanElement>>(
 	({ className, ...props }, forwardedRef) => {
@@ -16,8 +16,8 @@ const Argument = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(
 );
 
 const Token = {
-    Literal,
-    Argument,
+	Literal,
+	Argument,
 };
 
 export default Token;

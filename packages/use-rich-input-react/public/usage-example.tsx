@@ -52,12 +52,7 @@ const RichInput = ({ debug = true }: { debug?: boolean }) => {
 				</Container>
 			</div>
 
-			{debug && (
-				<DebugInput 
-					currentToken={currentToken} 
-					tokenInfo={tokenInfo} 
-				/>
-			)}
+			{debug && <DebugInput currentToken={currentToken} tokenInfo={tokenInfo} />}
 		</>
 	);
 };
@@ -65,20 +60,19 @@ const RichInput = ({ debug = true }: { debug?: boolean }) => {
 /** ---------------------------------------------------------------------------------- */
 
 const TemplateTokenTypeToString = ({ type }: { type: TemplateTokenType | undefined }) => {
-	if (type === undefined)
-		return '-';
+	if (type === undefined) return "-";
 
 	switch (type) {
 		case TemplateTokenType.Literal:
-			return 'Literal';
+			return "Literal";
 		case TemplateTokenType.Argument:
-			return 'Argument';
+			return "Argument";
 		case TemplateTokenType.IncompleteArgument:
-			return 'IncompleteArgument';
+			return "IncompleteArgument";
 		default:
-			return 'Invalid type';
+			return "Invalid type";
 	}
-}
+};
 
 function DebugInput({
 	currentToken,
@@ -91,11 +85,13 @@ function DebugInput({
 		<div>
 			<div>Current token value: {currentToken?.value ?? "-"}</div>
 
-			{(!!currentToken && currentToken.type !== TemplateTokenType.Literal) && (
+			{!!currentToken && currentToken.type !== TemplateTokenType.Literal && (
 				<div>Current token raw value: {currentToken.rawValue}</div>
 			)}
 
-			<div>Current token type: <TemplateTokenTypeToString type={currentToken?.type} /></div>
+			<div>
+				Current token type: <TemplateTokenTypeToString type={currentToken?.type} />
+			</div>
 
 			<div>
 				Cursor position: [{tokenInfo.cursorStart}, {tokenInfo.cursorEnd}]

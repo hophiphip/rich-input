@@ -102,29 +102,30 @@ export class TemplateParser {
 		if (index !== offset) {
 			const value = template.substring(offset, index);
 
-			const token: TemplateToken = nesting > 0
-				/** If nesting is greater than 0 then start character was not closed */
-				? {
-					id: getTemplateTokenId(TemplateTokenType.Literal, tokens.length),
-					rawValue: value,
-					label: value,
-					value: value.substring(start.length, value.length),
-					type: TemplateTokenType.IncompleteArgument,
-					position: {
-						start: offset,
-						end: index - 1,
-					},
-				}
-				: {
-					id: getTemplateTokenId(TemplateTokenType.Literal, tokens.length),
-					value: value,
-					label: value,
-					type: TemplateTokenType.Literal,
-					position: {
-						start: offset,
-						end: index - 1,
-					},
-				};
+			const token: TemplateToken =
+				nesting > 0
+					? /** If nesting is greater than 0 then start character was not closed */
+						{
+							id: getTemplateTokenId(TemplateTokenType.Literal, tokens.length),
+							rawValue: value,
+							label: value,
+							value: value.substring(start.length, value.length),
+							type: TemplateTokenType.IncompleteArgument,
+							position: {
+								start: offset,
+								end: index - 1,
+							},
+						}
+					: {
+							id: getTemplateTokenId(TemplateTokenType.Literal, tokens.length),
+							value: value,
+							label: value,
+							type: TemplateTokenType.Literal,
+							position: {
+								start: offset,
+								end: index - 1,
+							},
+						};
 
 			tokens.push(token);
 		}

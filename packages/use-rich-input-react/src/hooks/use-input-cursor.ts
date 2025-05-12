@@ -7,7 +7,7 @@ export function useInputCursor<
 	const [end, setEnd] = useState(0);
 
 	/**
-	 * Callback to trigger input cursor update. 
+	 * Callback to trigger input cursor update.
 	 * biome-ignore lint/correctness/useExhaustiveDependencies(ref.current): reference to the input
 	 */
 	const updateCursor = useCallback(() => {

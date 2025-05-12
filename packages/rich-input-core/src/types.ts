@@ -37,4 +37,7 @@ export type TemplateIncompleteArgumentToken = TemplateTokenBaseParams & {
 	type: TemplateTokenType.IncompleteArgument;
 };
 
-export type TemplateToken = TemplateArgumentToken | TemplateLiteralToken | TemplateIncompleteArgumentToken;
+export type TemplateToken =
+	| TemplateArgumentToken
+	| TemplateLiteralToken
+	| TemplateIncompleteArgumentToken;

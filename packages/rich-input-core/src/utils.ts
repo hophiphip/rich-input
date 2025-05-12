@@ -1,7 +1,7 @@
 import { defaultTemplateArgumentEnd, defaultTemplateArgumentStart } from "./const";
 import { type TemplateToken, TemplateTokenType } from "./types";
 
-export type TemplateTokenWithoutId = Omit<TemplateToken, 'id'>;
+export type TemplateTokenWithoutId = Omit<TemplateToken, "id">;
 
 /**
  * Convert an array of template tokens into a string value.
@@ -27,7 +27,7 @@ export function tokensToString(
  * @param index template token index
  */
 export function getTemplateTokenId(tokenType: TemplateTokenType, index: number) {
-    return `tempalte-token-${index}-${tokenType}`;
+	return `tempalte-token-${index}-${tokenType}`;
 }
 
 /**
@@ -52,7 +52,7 @@ export function computeCurrentToken(
 		const { position } = token;
 		const { start, end } = position;
 
-		if (start <= cursorStart && (end + 1) >= cursorStart) {
+		if (start <= cursorStart && end + 1 >= cursorStart) {
 			return [token, tokenIndex];
 		}
 	}

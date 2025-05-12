@@ -25,19 +25,16 @@ export function useRichInputToken({
 		computeCurrentToken(tokens, cursorStart, cursorEnd),
 	);
 
-	const debuncedUpdateTokenInfo = useDebouncedCallback(
-		() => {
-			setTokenInfo(computeCurrentToken(tokens, cursorStart, cursorEnd));
-		},
-		debounceDelayMs,
-	);
+	const debuncedUpdateTokenInfo = useDebouncedCallback(() => {
+		setTokenInfo(computeCurrentToken(tokens, cursorStart, cursorEnd));
+	}, debounceDelayMs);
 
-    /**
-     * biome-ignore lint/correctness/useExhaustiveDependencies(debuncedUpdateTokenInfo): reference to the function
+	/**
+	 * biome-ignore lint/correctness/useExhaustiveDependencies(debuncedUpdateTokenInfo): reference to the function
 	 * biome-ignore lint/correctness/useExhaustiveDependencies(tokens): dependency of debuncedUpdateTokenInfo
 	 * biome-ignore lint/correctness/useExhaustiveDependencies(cursorStart): dependency of debuncedUpdateTokenInfo
 	 * biome-ignore lint/correctness/useExhaustiveDependencies(cursorEnd): dependency of debuncedUpdateTokenInfo
-     */
+	 */
 	useEffect(() => {
 		debuncedUpdateTokenInfo();
 	}, [tokens, cursorStart, cursorEnd]);

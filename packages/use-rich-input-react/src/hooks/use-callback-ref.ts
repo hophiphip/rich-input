@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from "react";
 
 /**
  * biome-ignore lint/suspicious/noExplicitAny: Use any because unknown is not enough
