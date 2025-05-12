@@ -1,12 +1,32 @@
 # Rich Input
 
-Input component with text-highlight support 
+Input component with text-highlight support.
 
-# Preview
+**NOTE**: This library is still work in progress - backwards compatibility is not guaranteed.
 
-## Query builder
+## Installation
+
+### React hooks and headless components
+
+```sh
+npm install @hophiphip/use-rich-input-react
+```
+
+## Preview
+
+### Query builder
+
+Implementation of query-builder component with [Floating UI](https://github.com/floating-ui/floating-ui) (can be found in
+[examples](./examples/react/query-builder/)).
 
 ![Query builder React example](./media/query-builder-react-example.gif)
+
+### Template builder
+
+Implementation of template-builder component with [Floating UI](https://github.com/floating-ui/floating-ui) (can be found in
+[examples](./examples/react/template-builder/)).
+
+![Template builder React example](./media/template-builder-react-example.gif)
 
 ## Packages
 
