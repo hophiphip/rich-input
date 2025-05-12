@@ -1,1 +1,1 @@
-# Rich Input Query Builder Example
+# Rich Input Template Builder Example
