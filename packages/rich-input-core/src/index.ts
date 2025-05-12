@@ -54,9 +54,12 @@ export class TemplateParser {
 					/** Reset nesting level when a new token added */
 					nesting = 0;
 
+					const tokenValue = template.substring(offset, index);
+
 					tokens.push({
 						id: getTemplateTokenId(TemplateTokenType.Literal, tokens.length),
-						value: template.substring(offset, index),
+						value: tokenValue,
+						label: tokenValue,
 						type: TemplateTokenType.Literal,
 						position: {
 							start: offset,
@@ -81,6 +84,7 @@ export class TemplateParser {
 						id: getTemplateTokenId(TemplateTokenType.Argument, tokens.length),
 						value,
 						rawValue,
+						label: rawValue,
 						type: TemplateTokenType.Argument,
 						position: {
 							start: offset,
@@ -103,6 +107,7 @@ export class TemplateParser {
 				? {
 					id: getTemplateTokenId(TemplateTokenType.Literal, tokens.length),
 					rawValue: value,
+					label: value,
 					value: value.substring(start.length, value.length),
 					type: TemplateTokenType.IncompleteArgument,
 					position: {
@@ -113,6 +118,7 @@ export class TemplateParser {
 				: {
 					id: getTemplateTokenId(TemplateTokenType.Literal, tokens.length),
 					value: value,
+					label: value,
 					type: TemplateTokenType.Literal,
 					position: {
 						start: offset,

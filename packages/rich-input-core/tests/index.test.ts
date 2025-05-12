@@ -26,6 +26,7 @@ describe('should parse query-like template', () => {
                 },
                 type: TemplateTokenType.Literal,
                 value: literal,
+                label: literal,
             }
         ]);
     });
@@ -41,6 +42,7 @@ describe('should parse query-like template', () => {
                 },
                 type: TemplateTokenType.Literal,
                 value: literal,
+                label: literal,
             },
             {
                 position: {
@@ -50,6 +52,7 @@ describe('should parse query-like template', () => {
                 type: TemplateTokenType.IncompleteArgument,
                 value: "",
                 rawValue: argumentStart,
+                label: argumentStart,
             }
         ]);
     });
@@ -66,6 +69,7 @@ describe('should parse query-like template', () => {
                 },
                 type: TemplateTokenType.Literal,
                 value: literal,
+                label: literal,
             },
             {
                 position: {
@@ -75,6 +79,7 @@ describe('should parse query-like template', () => {
                 type: TemplateTokenType.Argument,
                 value: argumentValue,
                 rawValue: `${argumentStart}${argumentValue}${argumentEnd}`,
+                label: `${argumentStart}${argumentValue}${argumentEnd}`,
             }
         ]);
     });
@@ -91,6 +96,7 @@ describe('should parse query-like template', () => {
                 },
                 type: TemplateTokenType.Literal,
                 value: literal,
+                label: literal,
             },
             {
                 position: {
@@ -100,6 +106,7 @@ describe('should parse query-like template', () => {
                 type: TemplateTokenType.IncompleteArgument,
                 value: argumentValue,
                 rawValue: `${argumentStart}${argumentValue}`,
+                label: `${argumentStart}${argumentValue}`,
             }
         ]);
     });
@@ -117,6 +124,7 @@ describe('should parse query-like template', () => {
                 type: TemplateTokenType.Argument,
                 value: argumentOne,
                 rawValue: `${argumentStart}${argumentOne}${argumentEnd}`,
+                label: `${argumentStart}${argumentOne}${argumentEnd}`,
             },
             {
                 position: {
@@ -126,6 +134,7 @@ describe('should parse query-like template', () => {
                 type: TemplateTokenType.Argument,
                 value: argumentTwo,
                 rawValue: `${argumentStart}${argumentTwo}${argumentEnd}`,
+                label: `${argumentStart}${argumentTwo}${argumentEnd}`,
             }
         ]);
     });
@@ -156,6 +165,7 @@ describe('should parse template with brackets', () => {
                 },
                 type: TemplateTokenType.Literal,
                 value: literal,
+                label: literal,
             }
         ]);
     });
@@ -171,6 +181,7 @@ describe('should parse template with brackets', () => {
                 },
                 type: TemplateTokenType.Literal,
                 value: literal,
+                label: literal,
             },
             {
                 position: {
@@ -180,6 +191,7 @@ describe('should parse template with brackets', () => {
                 type: TemplateTokenType.IncompleteArgument,
                 value: "",
                 rawValue: argumentStart,
+                label: argumentStart,
             }
         ]);
     });
@@ -196,6 +208,7 @@ describe('should parse template with brackets', () => {
                 },
                 type: TemplateTokenType.Literal,
                 value: literal,
+                label: literal,
             },
             {
                 position: {
@@ -205,6 +218,7 @@ describe('should parse template with brackets', () => {
                 type: TemplateTokenType.Argument,
                 value: argumentValue,
                 rawValue: `${argumentStart}${argumentValue}${argumentEnd}`,
+                label: `${argumentStart}${argumentValue}${argumentEnd}`,
             }
         ]);
     });
@@ -221,6 +235,7 @@ describe('should parse template with brackets', () => {
                 },
                 type: TemplateTokenType.Literal,
                 value: literal,
+                label: literal,
             },
             {
                 position: {
@@ -230,6 +245,7 @@ describe('should parse template with brackets', () => {
                 type: TemplateTokenType.IncompleteArgument,
                 value: argumentValue,
                 rawValue: `${argumentStart}${argumentValue}`,
+                label: `${argumentStart}${argumentValue}`,
             }
         ]);
     });
@@ -247,6 +263,7 @@ describe('should parse template with brackets', () => {
                 type: TemplateTokenType.Argument,
                 value: argumentOne,
                 rawValue: `${argumentStart}${argumentOne}${argumentEnd}`,
+                label: `${argumentStart}${argumentOne}${argumentEnd}`,
             },
             {
                 position: {
@@ -256,6 +273,7 @@ describe('should parse template with brackets', () => {
                 type: TemplateTokenType.Argument,
                 value: argumentTwo,
                 rawValue: `${argumentStart}${argumentTwo}${argumentEnd}`,
+                label: `${argumentStart}${argumentTwo}${argumentEnd}`,
             }
         ]);
     });

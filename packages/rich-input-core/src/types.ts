@@ -13,11 +13,16 @@ type TemplateTokenPosition = {
 
 type TemplateTokenBaseParams = {
 	id: string;
+	/** Value that is used for previewing token */
+	label: string;
+	/** Token value without argument start/end characters */
 	value: string;
+	/** Token substring positions inside the whole string template */
 	position: TemplateTokenPosition;
 };
 
 export type TemplateArgumentToken = TemplateTokenBaseParams & {
+	/** Token value with argument start/end characters */
 	rawValue: string;
 	type: TemplateTokenType.Argument;
 };
@@ -27,6 +32,7 @@ export type TemplateLiteralToken = TemplateTokenBaseParams & {
 };
 
 export type TemplateIncompleteArgumentToken = TemplateTokenBaseParams & {
+	/** Token value with argument start/end characters */
 	rawValue: string;
 	type: TemplateTokenType.IncompleteArgument;
 };
