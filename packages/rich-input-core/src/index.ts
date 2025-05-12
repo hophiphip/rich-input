@@ -103,7 +103,7 @@ export class TemplateParser {
 			const value = template.substring(offset, index);
 
 			const token: TemplateToken = nesting > 0
-				/** If nesting is greated than 0 then start character was not closed */
+				/** If nesting is greater than 0 then start character was not closed */
 				? {
 					id: getTemplateTokenId(TemplateTokenType.Literal, tokens.length),
 					rawValue: value,
