@@ -106,7 +106,7 @@ export class TemplateParser {
 				nesting > 0
 					? /** If nesting is greater than 0 then start character was not closed */
 						{
-							id: getTemplateTokenId(TemplateTokenType.Literal, tokens.length),
+							id: getTemplateTokenId(TemplateTokenType.IncompleteArgument, tokens.length),
 							rawValue: value,
 							label: value,
 							value: value.substring(start.length, value.length),
