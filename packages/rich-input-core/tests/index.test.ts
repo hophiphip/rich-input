@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { TemplateParser, TemplateTokenType } from "../src/index";
+import { TemplateParser, TemplateTokenType, getTemplateTokenId } from "../src/index";
 
 test("should export the TemplateParser class", () => {
 	expect(TemplateParser).toBeDefined();
@@ -155,6 +155,50 @@ describe("should parse query-like template", () => {
 				label: `${argumentStart}${argumentTwo}${argumentEnd}`,
 			},
 		]);
+	});
+
+	test('should properly parse incomplete token', () => {
+		const literal = 'literal';
+		const argument = 'argument'; 
+		const incomplete = 'incomplete';
+    	const template = `${literal}${argumentStart}${argument}${argumentEnd}${argumentStart}${incomplete}`;
+
+		expect(
+			parser.parse(template)
+		).toStrictEqual([
+			{
+				id: getTemplateTokenId(TemplateTokenType.Literal, 0),
+				label: literal,
+				value: literal,
+				position: {
+					start: 0,
+					end: literal.length - 1,
+				},
+				type: TemplateTokenType.Literal,
+			},
+			{
+				id: getTemplateTokenId(TemplateTokenType.Argument, 1),
+				label: `${argumentStart}${argument}${argumentEnd}`,
+				rawValue: `${argumentStart}${argument}${argumentEnd}`,
+				value: argument,
+				position: {
+					start: literal.length,
+					end: literal.length + argumentStart.length + argument.length + argumentEnd.length - 1,
+				},
+				type: TemplateTokenType.Argument,
+			},
+			{
+				id: getTemplateTokenId(TemplateTokenType.IncompleteArgument, 2),
+				label: `${argumentStart}${incomplete}`,
+				rawValue: `${argumentStart}${incomplete}`,
+				value: incomplete,
+				position: {
+					start: literal.length + argumentStart.length + argument.length + argumentEnd.length,
+					end: literal.length + argumentStart.length + argument.length + argumentEnd.length + argumentStart.length + incomplete.length - 1,
+				},
+				type: TemplateTokenType.IncompleteArgument,
+			},
+		])
 	});
 });
 
@@ -312,5 +356,49 @@ describe("should parse template with brackets", () => {
 				label: `${argumentStart}${argumentTwo}${argumentEnd}`,
 			},
 		]);
+	});
+
+		test('should properly parse incomplete token', () => {
+		const literal = 'literal';
+		const argument = 'argument'; 
+		const incomplete = 'incomplete';
+    	const template = `${literal}${argumentStart}${argument}${argumentEnd}${argumentStart}${incomplete}`;
+
+		expect(
+			parser.parse(template)
+		).toStrictEqual([
+			{
+				id: getTemplateTokenId(TemplateTokenType.Literal, 0),
+				label: literal,
+				value: literal,
+				position: {
+					start: 0,
+					end: literal.length - 1,
+				},
+				type: TemplateTokenType.Literal,
+			},
+			{
+				id: getTemplateTokenId(TemplateTokenType.Argument, 1),
+				label: `${argumentStart}${argument}${argumentEnd}`,
+				rawValue: `${argumentStart}${argument}${argumentEnd}`,
+				value: argument,
+				position: {
+					start: literal.length,
+					end: literal.length + argumentStart.length + argument.length + argumentEnd.length - 1,
+				},
+				type: TemplateTokenType.Argument,
+			},
+			{
+				id: getTemplateTokenId(TemplateTokenType.IncompleteArgument, 2),
+				label: `${argumentStart}${incomplete}`,
+				rawValue: `${argumentStart}${incomplete}`,
+				value: incomplete,
+				position: {
+					start: literal.length + argumentStart.length + argument.length + argumentEnd.length,
+					end: literal.length + argumentStart.length + argument.length + argumentEnd.length + argumentStart.length + incomplete.length - 1,
+				},
+				type: TemplateTokenType.IncompleteArgument,
+			},
+		])
 	});
 });
