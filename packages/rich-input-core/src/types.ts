@@ -4,7 +4,7 @@ export enum TemplateTokenType {
 	IncompleteArgument = 2,
 }
 
-type TemplateTokenPosition = {
+export type TemplateTokenPosition = {
 	/** Index of the first token character  */
 	start: number;
 	/** Index of the last token character */
