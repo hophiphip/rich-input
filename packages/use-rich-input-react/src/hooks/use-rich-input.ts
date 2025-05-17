@@ -27,7 +27,7 @@ export type TokenInfo = {
 	tokens: TemplateToken[];
 	cursorStart: number;
 	cursorEnd: number;
-};
+} & Pick<TemplateParserOptions, "argumentStart" | "argumentEnd">;
 
 export function useRichInput<OverlayElement extends HTMLElement>({
 	value: externalValue,
@@ -119,8 +119,10 @@ export function useRichInput<OverlayElement extends HTMLElement>({
 			tokens,
 			cursorStart,
 			cursorEnd,
+			argumentEnd,
+			argumentStart,
 		};
-	}, [tokens, cursorStart, cursorEnd]);
+	}, [tokens, cursorStart, cursorEnd, argumentEnd, argumentStart]);
 
 	/** ---------------------------------------------------------------------------------- */
 
