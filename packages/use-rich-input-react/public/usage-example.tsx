@@ -1,4 +1,11 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, {
+	type Dispatch,
+	type SetStateAction,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 
 import {
 	Container,
@@ -8,6 +15,7 @@ import {
 	TemplateTokenType,
 	Token,
 	type TokenInfo,
+	tokensToString,
 	useRichInput,
 	useRichInputToken,
 } from "../src";
@@ -32,7 +40,7 @@ const RichInput = ({ debug = true }: { debug?: boolean }) => {
 
 	const inputProps = useMemo(() => getInputProps(), [getInputProps]);
 
-	const [currentToken] = useRichInputToken(tokenInfo);
+	const { currentToken, currentTokenIndex, updateCurrentToken } = useRichInputToken(tokenInfo);
 
 	return (
 		<>
@@ -52,7 +60,15 @@ const RichInput = ({ debug = true }: { debug?: boolean }) => {
 				</Container>
 			</div>
 
-			{debug && <DebugInput currentToken={currentToken} tokenInfo={tokenInfo} />}
+			{debug && (
+				<DebugInput
+					currentToken={currentToken}
+					currentTokenIndex={currentTokenIndex}
+					tokenInfo={tokenInfo}
+					updateCurrentToken={updateCurrentToken}
+					setValue={setValue}
+				/>
+			)}
 		</>
 	);
 };
@@ -76,14 +92,29 @@ const TemplateTokenTypeToString = ({ type }: { type: TemplateTokenType | undefin
 
 function DebugInput({
 	currentToken,
+	currentTokenIndex,
 	tokenInfo,
+	updateCurrentToken,
+	setValue,
 }: {
 	currentToken: TemplateToken | null;
+	currentTokenIndex: number | null;
 	tokenInfo: TokenInfo;
+	updateCurrentToken: (value: string) => TemplateToken[] | null;
+	setValue: Dispatch<SetStateAction<string>>;
 }) {
+	const [newTokenValue, setNewTokenValue] = useState("");
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Reset value on token change
+	useEffect(() => {
+		setNewTokenValue("");
+	}, [currentTokenIndex]);
+
 	return (
 		<div>
 			<div>Current token value: {currentToken?.value ?? "-"}</div>
+
+			<div>Current token index: {currentTokenIndex ?? "-"}</div>
 
 			{!!currentToken && currentToken.type !== TemplateTokenType.Literal && (
 				<div>Current token raw value: {currentToken.rawValue}</div>
@@ -96,6 +127,25 @@ function DebugInput({
 			<div>
 				Cursor position: [{tokenInfo.cursorStart}, {tokenInfo.cursorEnd}]
 			</div>
+
+			<label>
+				Update current token:
+				<input
+					value={newTokenValue}
+					onChange={(event) => setNewTokenValue(event.target.value)}
+					onKeyDown={(event) => {
+						if (event.key === "Enter" && newTokenValue) {
+							const newTokens = updateCurrentToken(newTokenValue);
+							if (!newTokens) return;
+
+							const newInputValue = tokensToString(newTokens);
+							setValue(newInputValue);
+
+							setNewTokenValue('');
+						}
+					}}
+				/>
+			</label>
 		</div>
 	);
 }
