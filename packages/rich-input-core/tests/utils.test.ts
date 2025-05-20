@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { TemplateParser, TemplateTokenType, computeCurrentToken, getTemplateTokenId, tokensToString, updateTokens } from "../src";
+import { TemplateParser, TemplateTokenType, appendToTokens, computeCurrentToken, getTemplateTokenId, tokensToString, updateTokens } from "../src";
 
 const start = '{';
 const end = '}';
@@ -133,7 +133,7 @@ describe('should properly update token', () => {
         ]);
     });
 
-        test('should properly update incomplete argument token and turn it into argument', () => {
+    test('should properly update incomplete argument token and turn it into argument', () => {
         const newIncomplete = 'incomplete42';
         const updatedTokens = updateTokens(tokens, 2, newIncomplete, { start, end });
 
@@ -170,6 +170,208 @@ describe('should properly update token', () => {
                 },
                 type: TemplateTokenType.Argument,
             },
+        ]);
+    });
+
+    test('should properly append literal token to an empty array', () => {
+        const newLiteral = 'literal';
+        const tokens = [];
+        const updatedTokens = appendToTokens(tokens, newLiteral, TemplateTokenType.Literal, { start, end });
+
+        expect(updatedTokens).toStrictEqual([
+            {
+                id: getTemplateTokenId(TemplateTokenType.Literal, 0),
+                label: newLiteral,
+                value: newLiteral,
+                position: {
+                    start: 0,
+                    end: newLiteral.length - 1,
+                },
+                type: TemplateTokenType.Literal,
+            }
+        ]);
+    });
+
+    test('should properly append argument token to an empty array', () => {
+        const newArgument = 'argument';
+        const rawNewArgument = `${start}${newArgument}${end}`;
+        const tokens = [];
+        const updatedTokens = appendToTokens(tokens, newArgument, TemplateTokenType.Argument, { start, end });
+
+        expect(updatedTokens).toStrictEqual([
+            {
+                id: getTemplateTokenId(TemplateTokenType.Argument, 0),
+                label: rawNewArgument,
+                value: newArgument,
+                rawValue: rawNewArgument,
+                position: {
+                    start: 0,
+                    end: rawNewArgument.length - 1,
+                },
+                type: TemplateTokenType.Argument,
+            }
+        ]);
+    });
+
+    test('should properly append incomplete argument token to an empty array', () => {
+        const newIncomplete = 'incomplete';
+        const rawNewIncomplete = `${start}${newIncomplete}`;
+        const tokens = [];
+        const updatedTokens = appendToTokens(tokens, newIncomplete, TemplateTokenType.IncompleteArgument, { start, end });
+
+        expect(updatedTokens).toStrictEqual([
+            {
+                id: getTemplateTokenId(TemplateTokenType.IncompleteArgument, 0),
+                label: rawNewIncomplete,
+                value: newIncomplete,
+                rawValue: rawNewIncomplete,
+                position: {
+                    start: 0,
+                    end: rawNewIncomplete.length - 1,
+                },
+                type: TemplateTokenType.IncompleteArgument,
+            }
+        ]);
+    });
+
+    test('should properly append literal token to an existing token array', () => {
+        const liternal1 = 'lol';
+        const argument2Value = 'kek';
+        const argument2RawValue = `${start}${argument2Value}${end}`;
+        const template = `${liternal1}${argument2RawValue}`;
+        const tokens = parser.parse(template);
+
+        const newLiteral = 'literal';
+        const updatedTokens = appendToTokens(tokens, newLiteral, TemplateTokenType.Literal, { start, end });
+
+        expect(updatedTokens).toStrictEqual([
+            {
+                id: getTemplateTokenId(TemplateTokenType.Literal, 0),
+                label: liternal1,
+                value: liternal1,
+                position: {
+                    start: 0,
+                    end: liternal1.length - 1,
+                },
+                type: TemplateTokenType.Literal,
+            },
+            {
+                id: getTemplateTokenId(TemplateTokenType.Argument, 1),
+                label: argument2RawValue,
+                rawValue: argument2RawValue,
+                value: argument2Value,
+                position: {
+                    start: liternal1.length,
+                    end: liternal1.length + argument2RawValue.length - 1,
+                },
+                type: TemplateTokenType.Argument,
+            },
+            {
+                id: getTemplateTokenId(TemplateTokenType.Literal, 2),
+                label: newLiteral,
+                value: newLiteral,
+                position: {
+                    start: liternal1.length + argument2RawValue.length,
+                    end: liternal1.length + argument2RawValue.length + newLiteral.length - 1,
+                },
+                type: TemplateTokenType.Literal,
+            }
+        ]);
+    });
+
+    test('should properly append argument token to an empty array', () => {
+        const newArgument = 'argument';
+        const rawNewArgument = `${start}${newArgument}${end}`;
+
+        const liternal1 = 'lol';
+        const argument2Value = 'kek';
+        const argument2RawValue = `${start}${argument2Value}${end}`;
+        const template = `${liternal1}${argument2RawValue}`;
+        const tokens = parser.parse(template);
+
+        const updatedTokens = appendToTokens(tokens, newArgument, TemplateTokenType.Argument, { start, end });
+
+        expect(updatedTokens).toStrictEqual([
+            {
+                id: getTemplateTokenId(TemplateTokenType.Literal, 0),
+                label: liternal1,
+                value: liternal1,
+                position: {
+                    start: 0,
+                    end: liternal1.length - 1,
+                },
+                type: TemplateTokenType.Literal,
+            },
+            {
+                id: getTemplateTokenId(TemplateTokenType.Argument, 1),
+                label: argument2RawValue,
+                rawValue: argument2RawValue,
+                value: argument2Value,
+                position: {
+                    start: liternal1.length,
+                    end: liternal1.length + argument2RawValue.length - 1,
+                },
+                type: TemplateTokenType.Argument,
+            },
+            {
+                id: getTemplateTokenId(TemplateTokenType.Argument, 2),
+                label: rawNewArgument,
+                value: newArgument,
+                rawValue: rawNewArgument,
+                position: {
+                    start: liternal1.length + argument2RawValue.length,
+                    end: liternal1.length + argument2RawValue.length + rawNewArgument.length - 1,
+                },
+                type: TemplateTokenType.Argument,
+            }
+        ]);
+    });
+
+    test('should properly append incomplete argument token to an empty array', () => {
+        const newIncomplete = 'incomplete';
+        const rawNewIncomplete = `${start}${newIncomplete}`;
+
+        const liternal1 = 'lol';
+        const argument2Value = 'kek';
+        const argument2RawValue = `${start}${argument2Value}${end}`;
+        const template = `${liternal1}${argument2RawValue}`;
+        const tokens = parser.parse(template);
+
+        const updatedTokens = appendToTokens(tokens, newIncomplete, TemplateTokenType.IncompleteArgument, { start, end });
+
+        expect(updatedTokens).toStrictEqual([
+            {
+                id: getTemplateTokenId(TemplateTokenType.Literal, 0),
+                label: liternal1,
+                value: liternal1,
+                position: {
+                    start: 0,
+                    end: liternal1.length - 1,
+                },
+                type: TemplateTokenType.Literal,
+            },
+            {
+                id: getTemplateTokenId(TemplateTokenType.Argument, 1),
+                label: argument2RawValue,
+                rawValue: argument2RawValue,
+                value: argument2Value,
+                position: {
+                    start: liternal1.length,
+                    end: liternal1.length + argument2RawValue.length - 1,
+                },
+                type: TemplateTokenType.Argument,
+            },
+            {
+                id: getTemplateTokenId(TemplateTokenType.IncompleteArgument, 2),
+                label: rawNewIncomplete,
+                value: newIncomplete,
+                rawValue: rawNewIncomplete,
+                position: {
+                    start: liternal1.length + argument2RawValue.length,
+                    end: liternal1.length + argument2RawValue.length + rawNewIncomplete.length - 1,
+                },
+                type: TemplateTokenType.IncompleteArgument,
+            }
         ]);
     });
 });
